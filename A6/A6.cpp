@@ -24,14 +24,14 @@ int main()
 	cin>>z;
 	while(z--)
 		{
-		double a,b,c,d, pr=0.00001;
+		double a,b,c,d, pr=0.0001;
 		cin>>x>>y>>c_;
 		a=x;b=y;
 		c=min(a,b)/2;
 		a-=0.00001;b-=0.00001;
 		do
 		{
-			//cout<<"a = "<<a<<" b = "<<b<<" rï¿½ï¿½nica: "<<abs(b-a)<<" c = ";
+			//cout<<"a = "<<a<<" b = "<<b<<" ró¿nica: "<<abs(b-a)<<" c = ";
 			//cout<<c<<" f(a) = "<<f(a)<<" f(c) = "<<f(c)<<endl;
 			if (f(a)*f(c)<0)
 				b = c;

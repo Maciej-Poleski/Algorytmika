@@ -23,7 +23,8 @@ int main()
 	while(z--)
 	{
 		scanf("%la%la%la",&x,&y,&c);
-		double tmp=min(x,y)/2,st=tmp/2,pr=0.0000000001;
+		double tmp=min(x,y)/2;
+		float st=tmp/2;
 		while(f(tmp) && st)
 		{
 			if(f(tmp)<0)

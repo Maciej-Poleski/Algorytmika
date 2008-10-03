@@ -4,12 +4,12 @@ using namespace std;
 
 double x,y,c;
 
-double f(double w)
+inline double f(double w)
 {
 	return 1/sqrt(x*x-w*w)+1/sqrt(y*y-w*w)-1/c;
 }
 
-double min(double l,double p)
+inline double min(double l,double p)
 {
 	if(l<p)
 		return l;

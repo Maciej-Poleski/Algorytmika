@@ -1,0 +1,10 @@
+Exception: STATUS_ACCESS_VIOLATION at eip=0040151F
+eax=006C40B8 ebx=00000005 ecx=00000000 edx=006C5058 esi=00000005 edi=00000000
+ebp=0022CCE8 esp=0022CC70 program=d:\Documents and Settings\Evil\Moje dokumenty\Algorytmika\A7.exe, pid 2976, thread main
+cs=001B ds=0023 es=0023 fs=003B gs=0000 ss=0023
+Stack trace:
+Frame     Function  Args
+0022CCE8  0040151F  (00000001, 6116B6F0, 006B0090, 0022CC70)
+0022CD98  610060D8  (00000000, 0022CDD0, 61005450, 0022CDD0)
+61005450  61004416  (0000009C, A02404C7, E8611021, FFFFFF48)
+     15 [main] A7 2976 _cygtls::handle_exceptions: Error while dumping state (probably corrupted stack)

@@ -165,14 +165,14 @@ int main()
         if(a.isEmpty())
         {
             b.putInteger();
-	    putchar('\n');
+        putchar('\n');
             continue;
         }
         if(b.isEmpty())
         {
             a.putInteger();
-	    putchar('\n');
-	    continue;
+        putchar('\n');
+        continue;
         }
 
         for(r=0;a.isPair() && b.isPair();++r)

@@ -89,7 +89,7 @@ class queue
             --s;
         }
         else
-            printf("Usuwam nieistniejï¿½cy obiekt!\n");
+            printf("Usuwam nieistniej±cy obiekt!\n");
     }
     T &front()
     {

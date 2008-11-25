@@ -1,184 +1,252 @@
 #include <cstdio>
 #include <algorithm>
-#include <vector>
-using namespace std;
 
-/*unsigned int abs(int a)
+template <class T>
+inline T min(T a,T b)
 {
-    if(a<0)
-        return -a;
+    if(a<b)
+        return a;
+    return b;
+}
+
+template <class T>
+inline T max(T a,T b)
+{
+    if(a<b)
+        return b;
     return a;
+}
+
+/*template <class T>
+void swap(T &l,T &p)
+{
+    T tmp=l;
+    l=p;
+    p=tmp;
 }*/
 
 struct kartez
 {
     int x,y;
     
-    kartez operator-(const kartez &o) const
+    bool operator<(const kartez &o) const
     {
-        kartez wynik;
-        if(x<=0 and o.x>=0)
-            wynik.x=o.x-x;
-        else if(x>0 and o.x<0)
-            wynik.x=x-o.x;
-        else
-            wynik.x=abs(abs(o.x)-abs(x));
-        if(y<=0 and o.y>=0)
-            wynik.y=o.y-y;
-        else if(y>0 and o.y<0)
-            wynik.y=y-o.y;
-        else
-            wynik.y=abs(abs(o.y)-abs(y));
-        return wynik;
+        if(x<o.x or (x==o.x and y<o.y))
+            return true;
+        return false;
+    }
+    
+    bool operator==(const kartez &o) const
+    {
+        if(x==o.x and y==o.y)
+            return true;
+        return false;
+    }
+    
+    long long operator-(const kartez &o) const
+    {
+        unsigned long long e1=(max(x,o.x)-min(x,o.x));
+        unsigned long long e2=(max(y,o.y)-min(y,o.y));
+        e1*=e1;
+        e2*=e2;
+        return e1+e2; 
     }
 };
 
-inline bool sortx (kartez a,kartez b) { return (a.x<b.x); }
-inline bool sorty (kartez a,kartez b) { return (a.y<b.y); }
-
-unsigned int n;
-kartez * punktyx,*endx;
-vector<kartez> punktyy;
-
-unsigned int find_min(vector<kartez> &y,unsigned int start,unsigned int stop)
+bool sorty(kartez a,kartez b)
 {
-    unsigned int size=stop-start;
+    if(a.y<b.y or (a.y==b.y and a.x<b.x))
+        return true;
+    return false;
+}
+
+kartez *x;
+unsigned int n;
+
+long long find_minimum(unsigned int begin,unsigned int end)
+{
+    unsigned int size=end-begin;
     if(size>3)
     {
-        unsigned int s=(stop+start)/2,www=punktyx[s].x,min1,min2,tm,xxx;
-        kartez tmp;
-        vector<kartez> y1,y2;
-        
-        for(vector<kartez>::iterator i=y.begin();i!=y.end();++i)
+        unsigned int s=(end+begin)/2;
+        //unsigned char nieparzysta=(end-begin)&1;
+        long long a,b;
+        kartez *yp,ys,*ypi;
+        kartez *we=x+end;
+        kartez *w1=x+begin;
+        //yli=yl=new kartez [size/2];
+        //ypi=yp=new kartez [size/2+nieparzysta];
+        ys=x[s];
+        /*for(unsigned int i=0;i<size;++i)
         {
-            if(i->x<=www)
-                y1.push_back(*i);
-            else
-                y2.push_back(*i);
-        }
-        
-        //printf("Start, stop, s %u %u %u\n",start,stop,s);
-        
-        
-        min1=find_min(y1,start,s);
-        printf("Podzieliłem w %u\n",www);
-        min2=find_min(y2,s,stop);
-        
-        //puts("A");
-        
-        
-        tm=min1;
-        if(tm>min2)
-            tm=min2;
-        
-        vector<kartez> yp;
-        
-        for(unsigned int i=0;i<size;++i)
-        {
-            if(y[i].x>www-tm and y[i].x<www+tm)
-                yp.push_back(y[i]);
-        }
-        
-        //printf("%u\n",yp.size());
-        
-        //puts("B");
-        
-        for(int i=0;i<(int)yp.size()-7;++i)
-        {
-            //puts("D");
-            for(unsigned int j=1;j<8;++j)
+            if(y[i]<ys)
             {
-                //puts("E");
-                tmp=yp[i]-yp[i+j];
-                xxx=tmp.x*tmp.x+tmp.y*tmp.y;
-                if(tm>xxx)
-                    tm=xxx;
+                *(yli++)=y[i];
             }
-        }
-        
-        if(yp.size()<8)
-        {
-            puts("A1");
-            for(unsigned int i=0;i<yp.size();++i)
+            else
             {
-                for(unsigned int j=i+1;j<yp.size();++j)
+                *(ypi++)=y[i];
+            }
+        }*//*
+        printf("Strona lewa p�aszczyzny:\n");
+        for(unsigned int i=0;yl+i!=yli;++i)
+        {
+            printf("%d %d\n",yl[i].x,yl[i].y);
+        }
+        printf("Strona prawa p�aszczyzny:\n");
+        for(unsigned int i=0;yp+i!=ypi;++i)
+        {
+            printf("%d %d\n",yp[i].x,yp[i].y);
+        }
+        printf("Koniec\n");*/
+        
+        a=find_minimum(begin,s);
+        b=find_minimum(s,end);
+        
+        ypi=yp=new kartez [size];
+        
+        {
+            kartez *w2=x+s;
+            kartez *ws=x+s;
+            
+            while(w1!=ws and w2!=we)
+            {
+                if(sorty(*w1,*w2))
                 {
-                    tmp=yp[i]-yp[i+j];
-                     xxx=tmp.x*tmp.x+tmp.y*tmp.y;
-                     if(tm>xxx)
-                     {
-                         printf("Lepsza: %u\n",xxx);
-                         tm=xxx;
-                     }
+                    *(ypi++)=*(w1++);
+                }
+                else
+                {
+                    *(ypi++)=*(w2++);
                 }
             }
+            
+            while(w1!=ws)
+            {
+                *(ypi++)=*(w1++);
+            }
+            
+            while(w2!=we)
+            {
+                *(ypi++)=*(w2++);
+            }
+            
+            for(w1=x+begin,ypi=yp;w1!=we;)
+            {
+                *(w1++)=*(ypi++);
+            }
+        }
+        delete [] yp;
+        
+        //printf("Lewo: %lld | Prawo: %lld\n",a,b);
+        
+        //delete [] yl;
+        //delete [] yp;
+        
+        a>b?a=b:false;
+        
+        ypi=yp=new kartez [n];
+        
+        for(w1=x+begin;w1!=we;++w1)
+        {
+            if(static_cast<long long>(w1->x)>static_cast<long long>(ys.x)-a and static_cast<long long>(w1->x)<static_cast<long long>(ys.x)+a)
+            {
+                *(ypi++)=*w1;
+            }
         }
         
-        //puts("C");
-        return tm;
+        /*printf("D�ugo�� Yp: %u | Zawarto�� Yp:\n",ypi-yp);
+        for(unsigned int i=0;yp+i<ypi;++i)
+        {
+            printf("%d %d\n",yp[i].x,yp[i].y);
+        }
+        printf("Koniec Yp\n");*/
+        
+        for(unsigned int i=0;yp+i<ypi;++i)
+        {
+            for(unsigned int j=1;j<8 and yp+i+j<ypi;++j)
+            {
+                if(yp[i]-yp[i+j]<a)
+                    a=yp[i]-yp[i+j];
+            }
+        }
+        delete [] yp;
+        
+        //printf("Znaleziona najmniejsza odleg�o��: %lld\n",a);
+        
+        return a;
     }
     else
     {
-        if(size==2)
+        if(size==3)
         {
-            kartez tmp=y[0]-y[1];
-            printf("%d %d %d %d | Min: %u\n",y[0].x,y[0].y,y[1].x,y[1].y,tmp.x*tmp.x+tmp.y*tmp.y);
-            return tmp.x*tmp.x+tmp.y*tmp.y;
+            long long wynik=x[begin]-x[begin+1],tm;
+            tm=x[begin+1]-x[begin+2];
+            if(wynik>tm)
+                wynik=tm;
+            tm=x[begin+2]-x[begin];
+            if(wynik>tm)
+                wynik=tm;
+            std::sort(x+begin,x+end,sorty);
+            return wynik;
         }
         else
         {
-            kartez a,b,c;
-            a=y[0]-y[1];
-            b=y[1]-y[2];
-            c=y[2]-y[0];
-            unsigned int a1=(a.x)*(a.x)+(a.y)*(a.y),b1=(b.x)*(b.x)+(b.y)*(b.y),c1=(c.x)*(c.x)+(c.y)*(c.y);
-            if(c1<b1)
-                b1=c1;
-            if(b1<a1)
-                a1=b1;
-            printf("%u %u %u %u %u %u | Min tutaj: %u\n",y[0].x,y[0].y,y[1].x,y[1].y,y[2].x,y[2].y,a1);
-            return a1;
+            std::sort(x+begin,x+end,sorty);
+            return x[begin]-x[begin+1];
         }
     }
 }
 
 int main()
 {
-    unsigned int z;
+    unsigned int z=1;
     scanf("%u",&z);
     while(z--)
     {
         scanf("%u",&n);
-        punktyx=new kartez[n];
-        endx=punktyx+n;
-        punktyy.reserve(n);
-        for(kartez *begin=punktyx;begin!=endx;++begin)
+        x=new kartez[n];
+        for(kartez *wsk=x,*end=x+n;wsk!=end;++wsk)
         {
-            scanf("%d%d",&(begin->x),&(begin->y));
-            punktyy.push_back(*begin);
+            scanf("%d%d",&wsk->x,&wsk->y);
         }/*
         for(unsigned int i=0;i<n;++i)
         {
-            printf("%d %d\n",punktyx[i].x,punktyx[i].y);
+            printf("%d %d\n",x[i].x,x[i].y);
         }
         for(unsigned int i=0;i<n;++i)
         {
-            printf("%d %d\n",punktyy[i].x,punktyy[i].y);
-        }
-        puts("1");*/
-        sort(punktyx,endx,sortx);
-        sort(punktyy.begin(),punktyy.end(),sorty);
-        /*for(unsigned int i=0;i<n;++i)
-        {
-            printf("%d %d\n",punktyx[i].x,punktyx[i].y);
-        }
-        for(unsigned int i=0;i<n;++i)
-        {
-            printf("%d %d\n",punktyy[i].x,punktyy[i].y);
+            printf("%d %d\n",y[i].x,y[i].y);
         }*/
-        printf("%u\n",find_min(punktyy,0,n));
-        delete [] punktyx;
+        std::sort(x,x+n);
+        //{       /*  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!   */
+           /* bool ok=false;
+            for(unsigned int i=1;i<n;++i)
+            {
+                if(x[i-1]==x[i])
+                {
+                    puts("0");
+                    ok=true;
+                    break;
+                }
+            }
+            if(ok)
+            {
+                continue;
+                delete [] x;
+            }
+        }*/       /*  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!   */
+        /*
+        for(unsigned int i=0;i<n;++i)
+        {
+            printf("%d %d\n",x[i].x,x[i].y);
+        }
+        for(unsigned int i=0;i<n;++i)
+        {
+            printf("%d %d\n",y[i].x,y[i].y);
+        }*/
+        printf("%lld\n",find_minimum(0,n));
+        delete [] x;
     }
-    
     return 0;
 }

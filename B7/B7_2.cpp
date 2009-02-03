@@ -7,15 +7,14 @@ using namespace std;
 struct edge
 {
 	uint32_t	d;
-	uint32_t	v;
+	bool*		v;
 	
-	edge(uint32_t dd,uint32_t vv) : d(dd),v(vv) {}
+	edge(uint32_t dd,bool* vv) : d(dd),v(vv) {}
 };
 
 bool			*v2;
 vector<edge>	*graf;
 uint32_t		*wynik;
-uint32_t		*w;
 uint32_t		suma;
 uint32_t		n;
 uint32_t		m;
@@ -26,14 +25,14 @@ void buduj()
 	{
 		if(graf[i].size()&1)
 		{
-			graf[0].push_back(edge(i,m+suma));
-			graf[i].push_back(edge(0,m+suma));
+			graf[0].push_back(edge(i,v2+m+suma));
+			graf[i].push_back(edge(0,v2+m+suma));
 			++suma;
 		}
 	}
 }
 
-/*void iteruj()
+void iteruj()
 {
 	wynik=new uint32_t[m+2];
 	uint32_t				*w=wynik+1;
@@ -50,7 +49,7 @@ void buduj()
 				printf(" %u",*wsk);
 			putchar('\n');
 			w=wynik;
-			puts("KONIEC");*//*
+			puts("KONIEC");*/
 			break;
 		}
 		if(i->d==0)
@@ -96,26 +95,13 @@ void onlyOneEuler()
 				printf(" %u",*wsk);
 			putchar('\n');
 			w=wynik;
-		}*//*
+		}*/
 	
 		*(w++)=n;
 		*(i->v)=true;
 		n=i->d;
 	}
 	delete [] wynik;
-}*/
-
-void dfs(uint32_t n=0)
-{
-	for(vector<edge>::iterator i=graf[n].begin(),e=graf[n].end();i!=e;++i)
-	{
-		if(!(v2[i->v]))
-		{
-			v2[i->v]=true;
-			dfs(i->d);
-			*(w++)=n;
-		}
-	}
 }
 
 int main()
@@ -129,56 +115,30 @@ int main()
 		scanf("%u%u",&n,&m);
 		
 		graf=new vector<edge>[n+1];
+		v2=new bool[m+suma+2];
 		
 		for(uint32_t i=0;i<m;++i)
 		{
 			scanf("%u%u",&a,&b);
-			graf[a].push_back(edge(b,i));
-			graf[b].push_back(edge(a,i));
+			graf[a].push_back(edge(b,v2+i));
+			graf[b].push_back(edge(a,v2+i));
 		}
 		
 		buduj();
 		
-		v2=new bool[m+suma];
-		
-		for(uint32_t i=0,e=m+suma;i<e;++i)
-			v2[i]=false;
-		
-		w=wynik=new uint32_t[m+suma+2];
+		for(bool *i=v2,*e=i+m+suma+2;i!=e;++i)
+			*i=false;
 		
 		if(suma!=0)
 		{
 			printf("%u\n",suma>>1);
-			dfs(0);
-			uint32_t	*old=wynik;
-			for(uint32_t *wsk=wynik;wsk<w;++wsk)
-			{
-				if(*wsk!=0)
-					continue;
-				
-				printf("%u",wsk-old);
-				
-				for(;old<wsk;++old)
-					printf(" %u",*old);
-				putchar('\n');
-				
-				old=wsk+1;
-			}
+			iteruj();
 		}
 		else
 		{
 			printf("1\n");
-			dfs(1);
-			printf("%u",w-wynik+1);
-			
-			for(uint32_t *wsk=wynik;wsk<w;++wsk)
-			{
-				printf(" %u",*wsk);
-			}
-			printf(" %u\n",*wynik);
+			onlyOneEuler();
 		}
-		
-		delete [] wynik;
 			
 		delete [] graf;
 		delete [] v2;

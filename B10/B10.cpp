@@ -1,5 +1,7 @@
 #include <cstdio>
-#include <stdint.h>
+#include <vector>
+
+using namespace std;
 
 bool		P[200][200];
 uint32_t	W[200][200];
@@ -37,15 +39,15 @@ int main()
 		for(uint32_t i=0;i<n;++i)							//Domknięcie przechodnie
 			for(uint32_t j=0;j<n;++j)
 				for(uint32_t k=0;k<n;++k)
-					if(P[j][k]==false && P[j][i]==true && P[i][k]==true)
-						P[j][k]=true;
+					if(P[i][k]==false && P[i][j]==true && P[j][k]==true)
+						P[i][k]=true;
 						
-		/*for(uint32_t i=0;i<n;++i)
+		for(uint32_t i=0;i<n;++i)
 		{
 			for(uint32_t j=0;j<n;++j)
 				printf("%u ",P[i][j]);
 			putchar('\n');
-		}*/
+		}
 		
 		for(uint32_t i=0;i<n;++i)							//Zliczanie
 			for(uint32_t j=0;j<n;++j)
@@ -53,19 +55,19 @@ int main()
 					if(P[i][k] && P[j][k])
 						++W[i][j];
 		
-		/*putchar('\n');
+		putchar('\n');
 		for(uint32_t i=0;i<n;++i)
 		{
 			for(uint32_t j=0;j<n;++j)
 				printf("%u ",W[i][j]);
 			putchar('\n');
-		}*/
+		}
 		
 		for(uint32_t i=0;i<n;++i)							//Stożki
 			for(uint32_t j=0;j<n;++j)
 				for(uint32_t k=0;k<n;++k)
 					if(i!=j && j!=k && i!=k && P[i][j] && !P[i][k] && !P[k][j])
-						if(W[i][k]!=W[j][k])
+						if(W[i][k]!=W[i][i])
 							N=true;
 		
 		if(N)

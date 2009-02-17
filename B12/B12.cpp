@@ -150,14 +150,10 @@ int main()
 			for(vector<edge>::iterator i=graf[V+1].begin(),e=graf[V+1].end();i!=e;++i)
 			{
 				//printf("relax z %d waga %d",V+1,mat[V]);
-				if(i->t==0 || (( (mat[V]+i->t-i->a)%i->t<i->l)) && mat[V]>=i->a)
+				if(i->t==0 || (mat[V]+i->t-i->a)%i->t<i->l)
 				{
 					//printf(" A ");
 					mat[i->d-1]=(mat[i->d-1]<mat[V]+i->w?mat[i->d-1]:mat[V]+i->w);
-				}
-				else if(mat[V]<i->a)
-				{
-					mat[i->d-1]=(mat[i->d-1]<i->a?mat[i->d-1]:i->a);
 				}
 				else
 				{

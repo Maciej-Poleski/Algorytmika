@@ -1,0 +1,14 @@
+"Jeden":
+Grzegorz<-Przemek<-Andrzej
+"Dwa":
+Jasko<-Lech<-Kamil
+"Trzy":
+Iwona<-Mikolaj
+"Cztery":
+Iwona<-Piotrek
+"Trzy":
+Mikolaj<-Iwona<-Piotrek
+"Cztery":
+Piotrek
+"trzy":
+osoba

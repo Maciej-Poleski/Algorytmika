@@ -1,258 +1,484 @@
+#define only_algorithm                        // PROTOTYP
+#ifdef force_only_algorithm
+#define only_algorithm
+#define use_stl_for_list
+#endif
+#ifdef only_algorithm
+#define use_list_for_slist
+#endif
+
 #include <cstdio>
 #include <cstring>
+#include <stdint.h>
 
-template <class T>
-void swap(T &a,T &b)
+#define make_command(x) x(#x)
+
+#ifndef use_list_for_slist
+template<class T>
+class slist
 {
-    T t=a;
-    a=b;
-    b=t;
+    choke me
+};
+#else
+#define slist list
+#endif
+
+#ifndef use_stl_for_list
+template<class T>
+class list
+{
+    #define prev wsk[M]
+    #define next wsk[(1+M)&1]
+    #define beg ptr[M]
+    #define en ptr[(1+M)&1]
+    
+    struct key
+    {
+        T           obj;
+        key         *wsk[2];
+
+        key(const T &oo) : obj(oo) {}
+    };
+    int             M;
+    key             *ptr[2];
+
+    list<T>         *succ;                          // Bardzo brzydkie rozwiązanie
+    list<T>         *exit;
+
+    public:
+
+        struct iterator
+        {
+            key     *ptr;
+            list<T> *M;
+
+            public:
+
+                iterator(key *pp,list<T> *MM) : ptr(pp),M(MM) {}
+
+                iterator & operator=(const iterator &o)
+                {
+                    ptr=o.ptr;
+                    M=o.M;
+                }
+
+                T & operator*()
+                {
+                    return ptr->obj;
+                }
+
+                iterator & operator++()
+                {
+                    ptr=ptr->wsk[(1+M->M)&1];
+                    if(!ptr)
+                    {
+                        M=M->succ;
+                        ptr=M->ptr[M->M];
+                    }
+                    return *this;
+                }
+
+                T * operator->()
+                {
+                    return &(ptr->obj);
+                }
+
+                bool operator!=(const iterator &o) const
+                {
+                    return ptr!=o.ptr;
+                }
+
+                bool operator==(const iterator &o) const
+                {
+                    return ptr==o.ptr;
+                }
+        };
+
+        list() : M(0)
+        {
+            beg=en=succ=exit=0;
+        }
+
+
+        explicit list(size_t n,const T& value = T()) : M(0)
+        {
+            beg=en=succ=exit=0;
+            while(n--)
+                push_back(value);
+        }
+
+        ~list()
+        {
+            clear();
+        }
+
+        void set()
+        {
+            M=0;
+            beg=en=succ=exit=0;
+        }
+
+        T & front()
+        {
+            return beg->obj;
+        }
+
+        T & back()
+        {
+            return en->obj;
+        }
+
+        iterator begin()
+        {
+            return iterator(beg,&this);
+        }
+
+        iterator end()
+        {
+            return iterator(en,&this);
+        }
+
+        void clear()
+        {
+            while(!empty())
+                pop_back();
+
+            beg=en=succ=exit=0;
+            M=0;
+        }
+
+        bool empty()
+        {
+            return ((beg==0) && (succ==0));
+        }
+
+        void push_back(const T co)
+        {
+            if(en==0)
+            {
+                beg=en=new key(co);
+                beg->prev=en->next=0;
+            }
+            else
+            {
+                en->next=new key(co);
+                en->next->prev=en;
+                en=en->next;
+                en->next=0;
+            }
+        }
+
+        void push_front(const T co)
+        {
+            if(beg==0)
+            {
+                beg=en=new key(co);
+                beg->prev=en->next=0;
+            }
+            else
+            {
+                beg->prev=new key(co);
+                beg->prev->next=beg;
+                beg=beg->prev;
+                beg->prev=0;
+            }
+        }
+
+        void reverse()
+        {
+            M=(1+M)&1;
+        }
+
+        void splice(iterator position,list<T> &x)
+        {
+            #warning To jest prymitywna wersja funkcji splice w związku z brakiem pełnego rozwiązania strażnika (najlepiej na iteratorach).
+            en->next=x.ptr[x.M];
+            en->next
+        }
+
+        void erase(iterator position)
+        {
+            #warning To jest prymitywna wersja funkcji erase w związku z niepełnym wsparciem dla iteratorów.
+            key     *p=position.ptr;
+            if(p->prev)
+                p->prev->next=p->next;
+            else
+                beg=p->next;
+            if(p->next)
+                p->next->prev=p->prev;
+            else
+                en=p->prev;
+            delete p;
+        }
+
+        void pop_front()
+        {
+            if(beg==0)
+            {
+                en=0;
+                return;
+            }
+            if(beg==en)
+            {
+                delete beg;
+                beg=en=0;
+            }
+            else
+            {
+                key *old=beg;
+                beg=beg->next;
+                //if(beg)
+                    beg->prev=0;
+                delete old;
+            }
+        }
+
+        void pop_back()
+        {
+            if(en==0)
+            {
+                beg=0;
+                return;
+            }
+            if(beg==en)
+            {
+                delete en;
+                beg=en=0;
+            }
+            else
+            {
+                key *old=en;
+                en=en->prev;
+                //if(en)
+                    en->next=0;
+                delete old;
+            }
+        }
+
+        void reject(iterator i)
+        {
+            key     *p=i.ptr;
+            if(p->prev)
+                p->prev->next=p->next;
+            else
+                beg=p->next;
+            if(p->next)
+                p->next->prev=p->prev;
+            else
+                en=p->prev;
+            //delete p;             Tylko usuwamy, nie kasujemy!
+            
+        }
+
+        #undef prev
+        #undef next
+        #undef beg
+        #undef en
+};
+#else
+#include <list>
+using namespace std;
+#endif
+
+struct hash
+{
+    union
+    {
+        char        in[8];
+        uint64_t    out;
+    };
+
+    public:
+        hash() {}
+        hash(const char *ptr)
+        {
+            strncpy(in,ptr,8);
+        }
+        hash(const hash & o) : out(o.out) {}
+
+        hash & operator=(const hash & o)
+        {
+            out=o.out;
+            return *this;
+        }
+        hash & operator=(const char *ptr)
+        {
+            strncpy(in,ptr,8);
+            return *this;
+        }
+
+        bool operator==(const hash & o)
+        {
+            return out==o.out;
+        }
+
+        uint64_t getInt()
+        {
+            return out;
+        }
+
+        void print()
+        {
+            int i=0;
+            while(i<8 && in[i]!=0)
+            {
+                putchar(in[i++]);
+                //fflush(stdout);
+            }
+        }
+};
+
+namespace Command
+{
+    hash            make_command(NEW),
+                    make_command(BACK),
+                    make_command(FRONT),
+                    make_command(PRINT),
+                    make_command(REVERSE),
+                    make_command(UNION),
+                    make_command(DELFRONT),
+                    make_command(DELBACK);
 }
 
 struct train
 {
-    char            *name;
-    train           *ptr[2];
+    hash            name;
+    list<hash>      entry;
 
-    train(const char *ww)
-    {
-        name=new char[9];
-        memcpy(name,ww,9);
-    }
+    train(const char *nn,const char *obj) : name(nn),entry(1,obj) {}
+    train(const char *nn,hash &obj) : name(nn),entry(1,obj) {}
+    train() {}
 
-    ~train()
+    void dump()
     {
-        delete [] name;
+        putchar('\"');
+        name.print();
+        printf("\":\n");
+        for(list<hash>::iterator i=entry.begin(),e=entry.end();i!=e;++i)
+        {
+            i->print();
+            printf("<-");
+        }
+        entry.back().print();
+        putchar('\n');
     }
 };
 
-struct slist
+slist<train>        set;
+
+inline slist<train>::iterator find(const char *n)
 {
-    char            *name;
-    slist           *next;
-    train           *begin;
-    train           *end;
-
-    slist(const char *ww)
+    hash            name(n);
+    for(slist<train>::iterator i=set.begin(),e=set.end();i!=e;++i)
     {
-        name=new char[9];
-        memcpy(name,ww,9);
+        if(i->name==name)
+            return i;
     }
-
-    ~slist()
-    {
-        clear();
-        delete [] name;
-    }
-
-    bool empty()
-    {
-        return begin==0;
-    };
-
-    void clear()
-    {
-        train   *old;
-        while(begin!=0)
-        {
-            old=begin;
-            begin=begin->ptr[begin->ptr[1]!=0];
-            delete old;
-            if(begin)
-            begin->ptr[begin->ptr[1]==old]=0;
-        }
-    }
-
-    /*void dump0()
-    {
-        train   *pt=begin;
-        train   *old=0;
-        train   *o2=0;
-        printf("%s: ",name);
-        while(pt!=end)
-        {
-            printf("%x ",pt);
-            fflush(stdout);
-            printf("%x %x ",pt->ptr[0],pt->ptr[1]);
-            fflush(stdout);
-            printf("%s ",pt->name);
-            fflush(stdout);
-            o2=pt;
-            pt=pt->ptr[pt->ptr[1]!=pt && pt->ptr[1]!=old];
-            old=o2;
-        }
-        printf("%s\n",pt->name);
-    }*/
-}*head;
+    return set.end();
+}
 
 int main()
 {
     int             z;
+    int             n;
     char            in[9];
-    char            t1[9];
     scanf("%d\n",&z);
     while(z--)
     {
-        int         n;
         scanf("%d\n",&n);
-        head=0;
-        while(n--)
+        hash        arg1();
+        hash        arg2();
+        char        tmp[9];
+
+        set.clear();
+
+        for(int i=0;i<n;++i)
         {
             scanf("%s ",in);
-            if(*in=='N')
-            {
-                scanf("%s %s\n",in,t1);
-                slist   *pt=new slist(in);
-                pt->next=head;
-                head=pt;
-                head->begin=head->end=new train(t1);
-                head->begin->ptr[0]=head->begin->ptr[1]=0;
+            hash    command(in);
+            using namespace Command;
 
-                //head->dump0();
-            }
-            else if(*in=='B')
+            if(command==NEW)
             {
-                scanf("%s %s\n",in,t1);
-                slist   *lpt=head;
-                while(strcmp(lpt->name,in))
-                    lpt=lpt->next;
-                train   *tpt=lpt->end->ptr[lpt->end->ptr[1]==0]=new train(t1);
-                tpt->ptr[0]=lpt->end;
-                tpt->ptr[1]=0;
-                lpt->end=tpt;
-
-                //lpt->dump0();
+                scanf("%s %s\n",in,tmp);
+                train   t;
+                set.push_back(t);
+                set.back().name=in;
+                set.back().entry.set();
+                set.back().entry.push_back(tmp);
+                //puts("NEW");
             }
-            else if(*in=='F')
+            else if(command==BACK)
             {
-                scanf("%s %s\n",in,t1);
-                slist   *lpt=head;
-                while(strcmp(lpt->name,in))
-                    lpt=lpt->next;
-                train   *tpt=lpt->begin->ptr[lpt->begin->ptr[1]==0]=new train(t1);
-                tpt->ptr[0]=lpt->begin;
-                tpt->ptr[1]=0;
-                lpt->begin=tpt;
-
-                //lpt->dump0();
+                scanf("%s %s\n",in,tmp);
+                find(in)->entry.push_back(tmp);
+                //puts("BACK");
             }
-            else if(*in=='P')
+            else if(command==FRONT)
+            {
+                scanf("%s %s\n",in,tmp);
+                find(in)->entry.push_front(tmp);
+                //puts("FRONT");
+            }
+            else if(command==PRINT)
             {
                 scanf("%s\n",in);
-                slist   *lpt=head;
-                train   *old=0;
-                train   *o2=0;
-                while(strcmp(lpt->name,in))
-                    lpt=lpt->next;
-                train   *tpt=lpt->begin;
-                printf("\"%s\":\n",lpt->name);
-                while(tpt!=lpt->end)
-                {
-                    printf("%s<-",tpt->name);
-                    fflush(stdout);
-                    o2=tpt;
-                    tpt=tpt->ptr[tpt->ptr[1]!=tpt && tpt->ptr[1]!=old];
-                    old=o2;
-                }
-                printf("%s\n",lpt->end->name);
+                find(in)->dump();
+                //puts("PRINT");
             }
-            else if(*in=='R')
+            else if(command==REVERSE)
             {
                 scanf("%s\n",in);
-                slist   *lpt=head;
-                while(strcmp(lpt->name,in))
-                    lpt=lpt->next;
-                swap(lpt->begin,lpt->end);
-
-                //lpt->dump0();
+                find(in)->entry.reverse();
+                //puts("REVERSE");
             }
-            else if(*in=='U')
+            else if(command==UNION)
             {
-                scanf("%s %s\n",in,t1);
-                slist       *lpt1=head;
-                slist       **lpt2=&head;
-                slist       *old;
-                while(strcmp(lpt1->name,in))
-                    lpt1=lpt1->next;
-                while(strcmp((*lpt2)->name,t1))
-                    lpt2=&((*lpt2)->next);
-                old=*lpt2;
-
-                *lpt2=(*lpt2)->next;
-
-                lpt1->end->ptr[lpt1->end->ptr[1]==0]=old->begin;
-                old->begin->ptr[old->begin->ptr[1]==0]=lpt1->end;
-                lpt1->end=old->end;
-
-                old->begin=old->end=0;
-
-                delete old;
-
-                //lpt1->dump0();
+                scanf("%s %s\n",in,tmp);
+                list<train>::iterator   i=find(in),
+                                        t=find(tmp);
+                i->entry.splice(i->entry.end(),t->entry);
+                set.erase(t);
+                //puts("UNION");
             }
-            else if(*in=='D')
+            else if(command==DELFRONT)
             {
-                if(in[3]=='F')
-                {
-                    scanf("%s %s\n",in,t1);
-                    slist   *lpt1=head;
-                    while(strcmp(lpt1->name,t1))
-                        lpt1=lpt1->next;
-                    if(lpt1->begin==lpt1->end)
-                    {
-                        memcpy(lpt1->name,in,9);
-                    }
-                    else
-                    {
-                        train   *tpt=new train(lpt1->begin->name);
-                        slist   *nht=new slist(in);
-                        nht->next=head;
-                        nht->begin=nht->end=tpt;
-                        tpt=lpt1->begin;
-                        lpt1->begin=lpt1->begin->ptr[lpt1->begin->ptr[1]!=0];
-                        delete tpt;
-                        head=nht;
-                        lpt1->begin->ptr[lpt1->begin->ptr[1]==tpt]=0;
-                        head->begin->ptr[0]=head->begin->ptr[1]=0;
-                    }
-                }
-                else if(in[3]=='B')
-                {
-                    scanf("%s %s\n",t1,in);
-                    slist   *lpt1=head;
-                        while(strcmp(lpt1->name,t1))
-                    lpt1=lpt1->next;
-                    if(lpt1->begin==lpt1->end)
-                    {
-                        memcpy(lpt1->name,in,9);
-                    }
-                    else
-                    {
-                        train   *tpt=new train(lpt1->end->name);
-                        slist   *nht=new slist(in);
-                        nht->next=head;
-                        nht->begin=nht->end=tpt;
-                        tpt=lpt1->end;
-                        lpt1->end=lpt1->end->ptr[lpt1->end->ptr[1]!=0];
-                        delete tpt;
-                        head=nht;
-                        lpt1->end->ptr[lpt1->end->ptr[1]==tpt]=0;
-                        head->begin->ptr[0]=head->begin->ptr[1]=0;
-                    }
-                }
-                else
-                    throw 123;
+                scanf("%s %s\n",in,tmp);
+                list<train>::iterator   t=find(tmp);
+                train                   nt;
+                set.push_back(nt);
+                set.back().name=in;
+                set.back().entry.set();
+                set.back().entry.push_back(t->entry.front());
+                
+                t->entry.pop_front();
+                if(t->entry.empty())
+                    set.erase(t);
+            }
+            else if(command==DELBACK)
+            {
+                scanf("%s %s\n",in,tmp);
+                list<train>::iterator   t=find(in);
+                train                   nt;
+                set.push_back(nt);
+                set.back().name=tmp;
+                set.back().entry.set();
+                set.back().entry.push_back(t->entry.back());
+
+                t->entry.pop_back();
+                if(t->entry.empty())
+                    set.erase(t);
             }
             else
                 throw 123;
-            
-        }
-        while(head)
-        {
-            slist   *th=head->next;
-            head->clear();
-            delete head;
-            head=th;
+
+            /*puts("DUMP");
+            for(list<train>::iterator i=set.begin(),e=set.end();i!=e;++i)
+            {
+                i->dump();
+            }
+            set.back().dump();
+            puts("\\Dump");*/
         }
     }
     return 0;

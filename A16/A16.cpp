@@ -141,7 +141,7 @@ int main()
         else
             putchar('2');
         ign();
-                                    /* POCZï¿½TEK */
+                                    /* POCZ¡TEK */
         if(n==1)
         {
             if(e[0])

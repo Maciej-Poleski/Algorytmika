@@ -1,0 +1,32 @@
+Zadanie na LCA
+
+Do LCA przechodzenie preorder
+g lca in linear complexity
+do kolejki wierzchołek w czasie przetwarzania
+tablica[2] poziom wierzchołka i numer w kolejności preorder
+wybieramy pierwsze p[ozycje każdego wierzchołka w tablicy
+zbudować na tym drzewo licznikowe typu min
+rozbijalne na przedziały bazowe
+O(n+m*lg(n))
+^^^^^^^^^^^^^^
+prawdopodobnie nie wystarczająco efektywne
+
+Robimy tablicę dwuwymiarową
+d[][2*n-1]
+d[lg(2*n-1)][2*n-1]
+d[i][j]=min(d[i-1][j],d[i-1][j+2^(i+1)] <--- Raczej -
+poziom wierzchołka i numer
+ważny jest poziom
+d[i][j]=min(ke<j;j+2^(i)) d[0][k])
+wypełniamy tablice, gdy min jest określone
+
+mpow2(b-a+1)>L
+a - początek przedziału w d[0]
+b - koniec
+L=2^k
+L<=b-a+1<2*L
+d[k][a],d[k][b-L+1]
+^^^^^^^^^^^^^^^^^^^
+min
+ ^ 
+jest LCA danych wierzchołków a i b

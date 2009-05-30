@@ -1,0 +1,16 @@
+KMP || boyer i moor
+x=w^k
+w^(k-1)    n%(n-p[n])==0
+n=|x|
+s>0 x[i]==x[i+s]
+^
+minimalizowanie
+s=n-p[n]
+lemat o okresach
+p,q
+p+q<n
+nwd(p,q)=s
+  ^^^^^^^^^^^
+udowodnić
+p>q
+p-q jest okresem

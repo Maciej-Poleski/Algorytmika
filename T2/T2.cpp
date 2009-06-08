@@ -3,7 +3,7 @@
 #include <algorithm>
 using namespace std;
 
-int* CP(int m,char *s)
+inline int* CP(int m,char *s)
 {
     int     *PREF=new int[m+1];
     PREF[1] = -1;

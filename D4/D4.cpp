@@ -1,3 +1,10 @@
+#ifdef full_debug
+#define debug
+#endif
+
+#define _GNU_SOURCE
+#undef _FORTFIY_SOURCE
+
 #include <cstdio>
 #include <cstring>
 #include <algorithm>
@@ -15,7 +22,9 @@ int m;
 
 int LCS(const int PA,const int KA,const int PB,const int KB)
 {
-    //printf("\t%d %d %d %d:\n",PA,KA,PB,KB);
+    #ifdef debug
+    printf("\t%d %d %d %d:\n",PA,KA,PB,KB);
+    #endif
     if(KB-PB==1)
     {
 	for(int i=PA;i<KA;++i)
@@ -40,10 +49,12 @@ int LCS(const int PA,const int KA,const int PB,const int KB)
     for(int i=1;i<l;++i)		// Wypełniam LCS prefixów pierwszy rząd
 	LCSP[i]=max(LCSP[i-1],(a[PA+i]==b[PB])?1:0);
     
-    /*printf("int:");
+    #ifdef full_debug
+    printf("int:");
     for(int i=0;i<l;++i)
 	printf(" %d",LCSP[i]);
-    puts("");*/
+    puts("");
+    #endif
     
     for(int i=PB+1;i<(PB+KB)/2;++i)		// Wyznaczam LCS prefixów (rozwiązanie w LCSP[l-1])
     {
@@ -74,13 +85,15 @@ int LCS(const int PA,const int KA,const int PB,const int KB)
 	}
     }
     
-    /*for(int i=0;i<l;++i)
+    #ifdef debug
+    for(int i=0;i<l;++i)
 	printf("%d ",LCSP[i]);
     puts("");
     
     for(int i=0;i<l;++i)
 	printf("%d ",LCSS[i]);
-    puts("");*/
+    puts("");
+    #endif
     
     x=-1;
     q=LCSS[0];
@@ -100,17 +113,20 @@ int LCS(const int PA,const int KA,const int PB,const int KB)
 	x=l-1;
     }
     
+    #ifdef debug
     int t1=(x>=0)?LCSP[x]:0;
     int t2=(x+1<l)?LCSS[x+1]:0;
+    #endif
     
     delete [] LCSP;
     delete [] LCSS;
     
+    #ifdef debug
     if(int e=LCS(PA,PA+x+1,PB,(PB+KB)/2)!=t1)
 	printf("|To rozwiązanie jest błędne!, oczekiwano %d a otrzymano %d|",t1,e);
     if(int e=LCS(PA+x+1,KA,(PB+KB)/2,KB)!=t2)
 	printf("|To rozwiązanie jest błędne!, oczekiwano %d a otrzymano %d|",t2,e);
-    
+    #endif
     return q;
 }
 

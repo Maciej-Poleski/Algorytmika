@@ -1,0 +1,2 @@
+T(J,K) - Przydział J pierwszych tematów do K pierwszych wykładów
+T(J,K)=min{i=1->J-1}(T(i,K-1)+koszt przydzielenia tematów od i+1 do J do K-tego wykładu)

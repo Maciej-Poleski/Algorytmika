@@ -5,14 +5,12 @@
 
 using std::min;
 
-//! Wynik zwracany przez funkcję realizującą rozszerzony algorytm euklidesa
 struct eer
 {
     long long d,x,y;
     eer(int dd,int xx,int yy) : d(dd),x(xx),y(yy) {}
 };
 
-//! Wynik zwracany przez funkcję rozwiązującą równanie modularne
 struct mlesr
 {
     long long x0,c;
@@ -20,7 +18,6 @@ struct mlesr
     mlesr(long long aa,long long bb) : x0(aa),c(bb) {}
 };
 
-//! Rozszerzony algorytm euklidesa
 inline eer ee(long long a,long long b)
 {
     if(b==0)
@@ -29,11 +26,6 @@ inline eer ee(long long a,long long b)
     return eer(p.d,p.y,p.x-(a/b)*p.y);
 }
 
-//! Oblicza ilość rozwiązań równania modularnego i jego najmniejsze rozwiązanie
-/*! - a - całkowite
- *  - b - całkowite
- *  - n - dodatnie
- */
 inline mlesr mles(long long a,long long b,long long n)
 {
     if(b<0)

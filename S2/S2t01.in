@@ -1,0 +1,12 @@
+1
+10
+INSERT tcs.uj.edu.pl 149.156.75.211
+INSERT localhost 127.0.0.1
+INSERT example.com 1.2.3.4
+FIND tcs.uj.edu.pl
+FIND example.com
+FIND exemple.com
+INSERT example.com 1.2.3.5
+FIND example.com
+DELETE localhost
+DELETE localhost
